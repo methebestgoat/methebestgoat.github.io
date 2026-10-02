@@ -1,0 +1,2403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech+ Study Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #131842;
+            --bg-card: #1a1f4e;
+            --bg-card-hover: #232966;
+            --accent-blue: #4f7df9;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-pink: #ec4899;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #2a3178;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --glow-blue: 0 0 20px rgba(79, 125, 249, 0.3);
+            --glow-purple: 0 0 20px rgba(139, 92, 246, 0.3);
+            --glow-green: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .bg-animation .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .bg-animation .orb:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            background: var(--accent-blue);
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+        
+        .bg-animation .orb:nth-child(2) {
+            width: 500px;
+            height: 500px;
+            background: var(--accent-purple);
+            bottom: -150px;
+            right: -150px;
+            animation-delay: -7s;
+        }
+        
+        .bg-animation .orb:nth-child(3) {
+            width: 300px;
+            height: 300px;
+            background: var(--accent-cyan);
+            top: 50%;
+            left: 50%;
+            animation-delay: -14s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -50px) scale(1.1); }
+            50% { transform: translate(-30px, 30px) scale(0.9); }
+            75% { transform: translate(40px, 20px) scale(1.05); }
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 39, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+        }
+        
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            -webkit-text-fill-color: white;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .nav-link {
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            border: none;
+            background: none;
+        }
+        
+        .nav-link:hover {
+            color: var(--text-primary);
+            background: rgba(79, 125, 249, 0.1);
+        }
+        
+        .nav-link.active {
+            color: var(--accent-blue);
+            background: rgba(79, 125, 249, 0.15);
+        }
+        
+        .streak-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--accent-orange);
+            font-weight: 600;
+        }
+        
+        /* Main Content */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 84px 2rem 2rem;
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Dashboard */
+        .hero {
+            text-align: center;
+            padding: 3rem 0 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-blue);
+            box-shadow: var(--glow-blue);
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-header h3 {
+            font-size: 1.2rem;
+        }
+        
+        .progress-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: rgba(79, 125, 249, 0.15);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 6px;
+            transition: width 0.8s ease;
+        }
+        
+        /* Domain Cards */
+        .domains-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.2rem;
+            margin: 2rem 0;
+        }
+        
+        .domain-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .domain-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--card-accent, var(--accent-blue)), transparent);
+        }
+        
+        .domain-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--card-accent, var(--accent-blue));
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .domain-card .domain-num {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--card-accent, var(--accent-blue));
+            margin-bottom: 8px;
+        }
+        
+        .domain-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .domain-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .domain-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .domain-objectives {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .domain-progress {
+            width: 60px;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .domain-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s;
+        }
+        
+        /* Study Mode Selector */
+        .mode-selector {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            color: var(--text-primary);
+        }
+        
+        .mode-btn:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+        
+        .mode-btn.selected {
+            border-color: var(--accent-blue);
+            background: rgba(79, 125, 249, 0.1);
+            box-shadow: var(--glow-blue);
+        }
+        
+        .mode-btn .mode-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .mode-btn h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+        
+        .mode-btn p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Flashcard */
+        .flashcard-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 0;
+        }
+        
+        .flashcard-progress {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .flashcard-wrapper {
+            perspective: 1000px;
+            width: 100%;
+            max-width: 600px;
+            height: 360px;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+        }
+        
+        .flashcard {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--bg-card), #1e2460);
+            border: 1px solid var(--border);
+        }
+        
+        .flashcard-back {
+            background: linear-gradient(135deg, #1a2850, #162040);
+            border: 1px solid var(--accent-blue);
+            transform: rotateY(180deg);
+        }
+        
+        .flashcard-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .flashcard-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+        
+        .flashcard-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 1.5rem;
+        }
+        
+        .flashcard-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .fc-btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .fc-btn-skip {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .fc-btn-skip:hover { background: rgba(239, 68, 68, 0.25); }
+        
+        .fc-btn-know {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .fc-btn-know:hover { background: rgba(16, 185, 129, 0.25); }
+        
+        .fc-btn-nav {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 10px 18px;
+        }
+        
+        .fc-btn-nav:hover { border-color: var(--accent-blue); }
+        
+        /* Quiz Mode */
+        .quiz-area {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+        
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quiz-timer {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-orange);
+        }
+        
+        .quiz-question-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quiz-q-num {
+            font-size: 0.8rem;
+            color: var(--accent-purple);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
+        }
+        
+        .quiz-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+        
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quiz-option {
+            padding: 1rem 1.2rem;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .quiz-option:hover:not(.disabled) {
+            border-color: var(--accent-blue);
+            background: rgba(79, 125, 249, 0.08);
+        }
+        
+        .quiz-option.selected {
+            border-color: var(--accent-blue);
+            background: rgba(79, 125, 249, 0.15);
+        }
+        
+        .quiz-option.correct {
+            border-color: var(--accent-green);
+            background: rgba(16, 185, 129, 0.15);
+        }
+        
+        .quiz-option.incorrect {
+            border-color: var(--accent-red);
+            background: rgba(239, 68, 68, 0.15);
+        }
+        
+        .quiz-option.disabled {
+            cursor: default;
+        }
+        
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        
+        .quiz-explanation {
+            background: rgba(79, 125, 249, 0.08);
+            border: 1px solid rgba(79, 125, 249, 0.2);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            display: none;
+        }
+        
+        .quiz-explanation.show { display: block; }
+        
+        .quiz-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quiz-btn:hover { transform: translateY(-1px); box-shadow: var(--glow-blue); }
+        .quiz-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        /* Results */
+        .results-box {
+            text-align: center;
+            padding: 3rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+        }
+        
+        .results-score {
+            font-size: 5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .results-score.low {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));
+            -webkit-background-clip: text;
+        }
+        
+        .results-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0 2rem;
+        }
+        
+        .results-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .results-stat {
+            text-align: center;
+        }
+        
+        .results-stat-val {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .results-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        /* Reference Page */
+        .search-bar {
+            position: relative;
+            max-width: 500px;
+            margin: 2rem auto;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .search-bar input:focus { border-color: var(--accent-blue); }
+        
+        .search-bar .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+        
+        .ref-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        
+        .ref-header {
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        
+        .ref-header:hover { background: var(--bg-card-hover); }
+        
+        .ref-header h3 { font-size: 1rem; }
+        
+        .ref-arrow {
+            transition: transform 0.3s;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+        
+        .ref-section.open .ref-arrow { transform: rotate(180deg); }
+        
+        .ref-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+        
+        .ref-section.open .ref-body { max-height: 2000px; }
+        
+        .ref-content {
+            padding: 0 1.5rem 1.5rem;
+        }
+        
+        .ref-term {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .ref-term:last-child { border-bottom: none; }
+        
+        .ref-term strong {
+            color: var(--accent-cyan);
+            font-size: 0.95rem;
+        }
+        
+        .ref-term p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+        
+        .ref-tip {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 3px solid var(--accent-orange);
+            padding: 0.8rem 1rem;
+            margin: 0.8rem 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .ref-essential {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 3px solid var(--accent-green);
+            padding: 0.8rem 1rem;
+            margin: 0.8rem 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Match Game */
+        .match-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+        
+        .match-col-header {
+            text-align: center;
+            font-weight: 700;
+            color: var(--accent-blue);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-bottom: 0.5rem;
+        }
+        
+        .match-item {
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .match-item:hover:not(.matched):not(.wrong) {
+            border-color: var(--accent-blue);
+        }
+        
+        .match-item.selected {
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.15);
+            box-shadow: var(--glow-purple);
+        }
+        
+        .match-item.matched {
+            border-color: var(--accent-green);
+            background: rgba(16, 185, 129, 0.12);
+            opacity: 0.7;
+            cursor: default;
+        }
+        
+        .match-item.wrong {
+            border-color: var(--accent-red);
+            background: rgba(239, 68, 68, 0.12);
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        
+        .match-score {
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--glow-blue); }
+        
+        .btn-secondary {
+            padding: 12px 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary:hover { border-color: var(--accent-blue); }
+        
+        .btn-row {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+        
+        /* Filter Tags */
+        .filter-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+            justify-content: center;
+        }
+        
+        .filter-tag {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+        
+        .filter-tag:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+        
+        .filter-tag.active {
+            background: rgba(79, 125, 249, 0.2);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero h1 { font-size: 2rem; }
+            .nav-links { gap: 0; }
+            .nav-link { padding: 8px 10px; font-size: 0.8rem; }
+            .domains-grid { grid-template-columns: 1fr; }
+            .mode-selector { flex-direction: column; }
+            .match-grid { grid-template-columns: 1fr; }
+            .results-stats { gap: 1.5rem; }
+            .streak-badge { display: none; }
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 9999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.success {
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+        }
+        
+        .toast.info {
+            background: rgba(79, 125, 249, 0.9);
+            color: white;
+        }
+        
+        /* Domain selector in study modes */
+        .domain-select {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            outline: none;
+            cursor: pointer;
+            margin: 1rem auto;
+            display: block;
+        }
+        
+        .domain-select:focus {
+            border-color: var(--accent-blue);
+        }
+        
+        .domain-select option {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-animation">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+</div>
+
+<nav>
+    <div class="nav-inner">
+        <div class="logo" onclick="showPage('dashboard')">
+            <div class="logo-icon">⚡</div>
+            Tech+ Hub
+        </div>
+        <div class="nav-links">
+            <button class="nav-link active" onclick="showPage('dashboard')">Dashboard</button>
+            <button class="nav-link" onclick="showPage('study')">Study</button>
+            <button class="nav-link" onclick="showPage('quiz')">Quiz</button>
+            <button class="nav-link" onclick="showPage('match')">Match</button>
+            <button class="nav-link" onclick="showPage('reference')">Reference</button>
+        </div>
+        <div class="streak-badge" id="streakBadge">🔥 <span id="streakCount">0</span> day streak</div>
+    </div>
+</nav>
+
+<div class="container">
+    
+    <!-- DASHBOARD PAGE -->
+    <div class="page active" id="page-dashboard">
+        <div class="hero">
+            <h1>Master Your Tech+ Exam</h1>
+            <p>Interactive flashcards, quizzes, and matching games to help you ace every domain.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-value" id="totalTerms">0</div>
+                <div class="stat-label">Total Terms</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value" id="masteredCount">0</div>
+                <div class="stat-label">Mastered</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-value" id="quizAccuracy">0%</div>
+                <div class="stat-label">Quiz Accuracy</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-value" id="quizzesTaken">0</div>
+                <div class="stat-label">Quizzes Taken</div>
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-header">
+                <h3>📈 Overall Mastery</h3>
+                <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+            </div>
+        </div>
+
+        <h2 style="margin: 2rem 0 1rem; font-size: 1.4rem;">🗂️ Domains</h2>
+        <div class="domains-grid" id="domainsGrid"></div>
+    </div>
+
+    <!-- STUDY (Flashcards) PAGE -->
+    <div class="page" id="page-study">
+        <div class="section-title">📖 Flashcard Study</div>
+        <div class="section-subtitle">Tap a card to reveal the answer</div>
+        
+        <select class="domain-select" id="fcDomainSelect" onchange="initFlashcards()">
+            <option value="all">All Domains</option>
+        </select>
+
+        <div class="flashcard-area">
+            <div class="flashcard-progress">
+                <span id="fcProgress">Card 1 of 10</span>
+                <span id="fcScore">✅ 0 | ❌ 0</span>
+            </div>
+            <div class="flashcard-wrapper" onclick="flipCard()">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div class="flashcard-label">Term</div>
+                        <div class="flashcard-text" id="fcFront">Loading...</div>
+                        <div class="flashcard-hint">Click to reveal</div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div class="flashcard-label">Definition</div>
+                        <div class="flashcard-text" id="fcBack">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="flashcard-controls">
+                <button class="fc-btn fc-btn-nav" onclick="prevCard()">◀ Prev</button>
+                <button class="fc-btn fc-btn-skip" onclick="markCard(false)">❌ Still Learning</button>
+                <button class="fc-btn fc-btn-know" onclick="markCard(true)">✅ Got It!</button>
+                <button class="fc-btn fc-btn-nav" onclick="nextCard()">Next ▶</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUIZ PAGE -->
+    <div class="page" id="page-quiz">
+        <div class="section-title">🧠 Quiz Mode</div>
+        <div class="section-subtitle">Test your knowledge with multiple choice questions</div>
+
+        <select class="domain-select" id="quizDomainSelect">
+            <option value="all">All Domains</option>
+        </select>
+
+        <div id="quizSetup" class="btn-row" style="margin-top:1.5rem">
+            <button class="btn-primary" onclick="startQuiz(10)">10 Questions</button>
+            <button class="btn-primary" onclick="startQuiz(20)">20 Questions</button>
+            <button class="btn-primary" onclick="startQuiz(9999)">All Questions</button>
+        </div>
+
+        <div class="quiz-area" id="quizArea" style="display:none">
+            <div class="quiz-header">
+                <span id="quizProgress">Question 1 / 10</span>
+                <div class="quiz-timer">⏱ <span id="quizTimer">0:00</span></div>
+            </div>
+            <div class="quiz-question-box">
+                <div class="quiz-q-num" id="quizDomain">Domain 1.0</div>
+                <div class="quiz-question" id="quizQuestion">Loading...</div>
+            </div>
+            <div class="quiz-options" id="quizOptions"></div>
+            <div class="quiz-explanation" id="quizExplanation"></div>
+            <button class="quiz-btn" id="quizBtn" onclick="quizAction()" disabled>Check Answer</button>
+        </div>
+
+        <div id="quizResults" style="display:none">
+            <div class="results-box">
+                <div class="results-score" id="resultsScore">85%</div>
+                <div class="results-subtitle" id="resultsSubtitle">Great job!</div>
+                <div class="results-stats">
+                    <div class="results-stat">
+                        <div class="results-stat-val" id="resCorrect" style="color:var(--accent-green)">0</div>
+                        <div class="results-stat-label">Correct</div>
+                    </div>
+                    <div class="results-stat">
+                        <div class="results-stat-val" id="resIncorrect" style="color:var(--accent-red)">0</div>
+                        <div class="results-stat-label">Incorrect</div>
+                    </div>
+                    <div class="results-stat">
+                        <div class="results-stat-val" id="resTime" style="color:var(--accent-orange)">0:00</div>
+                        <div class="results-stat-label">Time</div>
+                    </div>
+                </div>
+                <div class="btn-row">
+                    <button class="btn-primary" onclick="showPage('quiz')">Try Again</button>
+                    <button class="btn-secondary" onclick="showPage('study')">Study Flashcards</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MATCH GAME PAGE -->
+    <div class="page" id="page-match">
+        <div class="section-title">🔗 Match Game</div>
+        <div class="section-subtitle">Match each term with its correct definition</div>
+
+        <select class="domain-select" id="matchDomainSelect">
+            <option value="all">All Domains</option>
+        </select>
+        
+        <div class="btn-row" id="matchSetup">
+            <button class="btn-primary" onclick="startMatch()">Start Matching!</button>
+        </div>
+
+        <div class="match-score" id="matchScore" style="display:none">
+            Matched: <span id="matchedCount">0</span> / <span id="matchTotal">6</span>
+        </div>
+        
+        <div class="match-grid" id="matchGrid" style="display:none">
+            <div class="match-col-header">Terms</div>
+            <div class="match-col-header">Definitions</div>
+        </div>
+
+        <div class="btn-row" id="matchRestart" style="display:none">
+            <button class="btn-primary" onclick="startMatch()">New Round</button>
+            <button class="btn-secondary" onclick="showPage('dashboard')">Back to Dashboard</button>
+        </div>
+    </div>
+
+    <!-- REFERENCE PAGE -->
+    <div class="page" id="page-reference">
+        <div class="section-title">📋 Quick Reference</div>
+        <div class="section-subtitle">All objectives, terms, tips, and essentials</div>
+
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="refSearch" placeholder="Search terms, tips, concepts..." oninput="filterReference()">
+        </div>
+
+        <div id="refContent"></div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================
+// DATA: All study material
+// ============================
+const studyData = {
+    domains: [
+        {
+            id: "1.0",
+            name: "IT Concepts and Terminology",
+            color: "#4f7df9",
+            objectives: [
+                {
+                    id: "1.1",
+                    title: "Explain the basics of computing",
+                    terms: [
+                        { term: "Input", def: "Providing information to a device via hardware like a keyboard, mouse, or sensors." },
+                        { term: "Processing", def: "The computer's analysis of data, typically performed by the Central Processing Unit (CPU)." },
+                        { term: "Output", def: "The result of processing reported to the user through devices like monitors or printers." },
+                        { term: "Storage", def: "Maintaining data for future use, either temporarily in memory or permanently on disks." }
+                    ],
+                    tips: [
+                        "Be ready to classify specific actions (e.g., a printer jamming is an output issue; a touchscreen not responding is an input issue) into the four categories: Input, Processing, Output, Storage."
+                    ],
+                    essentials: [
+                        "Computers receive input from users and other devices.",
+                        "Processing involves computation or decision-making before storing or outputting data."
+                    ]
+                },
+                {
+                    id: "1.2",
+                    title: "Identify notational systems",
+                    terms: [
+                        { term: "Binary", def: "The native 0s and 1s format used by computers; best for 'yes/no' or 'on/off' data." },
+                        { term: "Decimal", def: "The standard base-10 system using digits 0–9." },
+                        { term: "Hexadecimal", def: "A base-16 system using 0–9 and A–F; often used for memory addresses." },
+                        { term: "ASCII", def: "A representation for English text characters." },
+                        { term: "Unicode", def: "A large character set for English and non-English characters (e.g., Cyrillic)." }
+                    ],
+                    tips: [
+                        "Look for non-English character requirements as a trigger to choose Unicode over ASCII."
+                    ],
+                    essentials: [
+                        "Binary is efficient for two-value options.",
+                        "Hexadecimal and octal are used to represent data more compactly than binary."
+                    ]
+                },
+                {
+                    id: "1.3",
+                    title: "Compare and contrast common units of measure",
+                    terms: [
+                        { term: "Byte", def: "Consists of 8 bits; used to measure storage (KB, MB, GB, TB, PB)." },
+                        { term: "bps (bits per second)", def: "Used to measure network throughput (Kbps, Mbps, Gbps)." },
+                        { term: "Hertz (Hz)", def: "Used to measure processor speed (MHz, GHz)." }
+                    ],
+                    tips: [
+                        "Always pay attention to the case of the 'b': capital B is for bytes (storage), while lowercase b is for bits (speed).",
+                        "When comparing sizes, convert all values to the same unit first."
+                    ],
+                    essentials: [
+                        "A bit is the smallest unit of storage.",
+                        "Processor speed is measured in cycles per second."
+                    ]
+                },
+                {
+                    id: "1.4",
+                    title: "Explain the troubleshooting methodology",
+                    terms: [
+                        { term: "Probable Cause", def: "An educated guess or theory based on research or questioning the obvious." },
+                        { term: "Root Cause", def: "The fundamental reason for a problem, determined after testing a theory." },
+                        { term: "Troubleshooting Step 1", def: "Identify the problem." },
+                        { term: "Troubleshooting Step 2", def: "Establish a theory of probable cause." },
+                        { term: "Troubleshooting Step 3", def: "Test the theory to determine the cause." },
+                        { term: "Troubleshooting Step 4", def: "Establish a plan of action and implement the solution." },
+                        { term: "Troubleshooting Step 5", def: "Verify full system functionality and implement preventive measures." },
+                        { term: "Troubleshooting Step 6", def: "Document findings, actions, and outcomes." }
+                    ],
+                    tips: [
+                        "Memorize the six steps in order. If you have just verified functionality, the next step is documentation."
+                    ],
+                    essentials: [
+                        "The six troubleshooting steps must be followed in order for the exam."
+                    ]
+                }
+            ]
+        },
+        {
+            id: "2.0",
+            name: "Infrastructure",
+            color: "#8b5cf6",
+            objectives: [
+                {
+                    id: "2.1",
+                    title: "Common computing devices and their purposes",
+                    terms: [
+                        { term: "Workstation", def: "A powerful desktop for intensive tasks like video editing." },
+                        { term: "Server", def: "A dedicated computer in a data center providing services like web hosting." },
+                        { term: "IoT (Internet of Things)", def: "Everyday devices (thermostats, refrigerators) connected to the internet." }
+                    ],
+                    tips: [
+                        "Select the device that balances usability and cost; for example, use a tablet for a portable touchscreen kiosk rather than a more expensive laptop."
+                    ],
+                    essentials: [
+                        "Desktops and workstations are for fixed locations, while laptops and smartphones are for mobile users."
+                    ]
+                },
+                {
+                    id: "2.2",
+                    title: "Purpose of common internal computing components",
+                    terms: [
+                        { term: "Motherboard", def: "The main circuit board connecting all internal components." },
+                        { term: "RAM (Random Access Memory)", def: "Volatile, temporary working memory." },
+                        { term: "GPU (Graphics Processing Unit)", def: "Supplements the CPU for complex graphics or math." },
+                        { term: "NIC (Network Interface Card)", def: "Enables wired or wireless network connections." }
+                    ],
+                    tips: [
+                        "If a question asks about network speed issues, the NIC is the component to upgrade."
+                    ],
+                    essentials: [
+                        "SSDs are faster and more expensive than HDDs for long-term storage.",
+                        "The CPU is the main brain of the computer."
+                    ]
+                },
+                {
+                    id: "2.3",
+                    title: "Compare and Contrast Storage Types",
+                    terms: [
+                        { term: "Volatile Storage", def: "Memory (like RAM) that requires power to maintain data." },
+                        { term: "Non-volatile Storage", def: "Storage (like SSD or HDD) that retains data even without power." },
+                        { term: "Local Storage", def: "Physical storage within or directly attached to a computer (HDDs, SSDs, flash drives)." },
+                        { term: "Local Network Storage", def: "Storage accessible over a network, such as NAS or a file server." },
+                        { term: "Cloud Storage Service", def: "Data stored on remote servers accessed via the internet." }
+                    ],
+                    tips: [
+                        "If a question asks for the fastest permanent storage, look for NVMe.",
+                        "Remember that optical storage refers to CDs, DVDs, and Blu-ray discs."
+                    ],
+                    essentials: [
+                        "HDDs use spinning magnetic disks, while SSDs use flash memory with no moving parts.",
+                        "RAM is the primary example of volatile storage used by the CPU for active tasks."
+                    ]
+                },
+                {
+                    id: "2.4",
+                    title: "Install and Configure Common Peripheral Devices",
+                    terms: [
+                        { term: "Peripherals", def: "Devices that add functionality to a computer, including printers, scanners, keyboards, mice, and web cameras." },
+                        { term: "Plug-and-Play (PnP)", def: "Technology that allows the OS to automatically detect and configure a device without manual driver installation." },
+                        { term: "Uninterruptible Power Supply (UPS)", def: "Provides emergency power to a device when the main power source fails." }
+                    ],
+                    tips: [
+                        "For IP-based peripherals (like network printers), you typically need to know the device's IP address and use a web-based configuration interface."
+                    ],
+                    essentials: [
+                        "Installing a peripheral may require a specific driver, which is software that allows the OS to communicate with the hardware."
+                    ]
+                },
+                {
+                    id: "2.5",
+                    title: "Compare and Contrast Common I/O Device Interfaces",
+                    terms: [
+                        { term: "USB (A/B/C)", def: "The most common universal serial interface for peripherals." },
+                        { term: "HDMI", def: "Carries both high-definition video and audio signals." },
+                        { term: "VGA", def: "Analog, video-only display interface." },
+                        { term: "DisplayPort", def: "Standard digital video interface, often used with monitors." },
+                        { term: "Thunderbolt", def: "A high-speed interface often used for connecting displays and external storage." },
+                        { term: "RJ45", def: "The standard 8-pin connector used for wired Ethernet networking." },
+                        { term: "NFC (Near-Field Communication)", def: "Very short-range wireless communication, often used for mobile payments." }
+                    ],
+                    tips: [
+                        "HDMI carries both high-definition video and audio signals, whereas VGA is analog and video-only.",
+                        "NFC is for very short-range wireless communication."
+                    ],
+                    essentials: [
+                        "Interfaces can be wired (USB, Ethernet, Fiber) or wireless (Bluetooth, RF, NFC, 802.11x)."
+                    ]
+                },
+                {
+                    id: "2.6",
+                    title: "Compare and Contrast Virtualization and Cloud Technologies",
+                    terms: [
+                        { term: "Hypervisor", def: "Software that manages and allocates hardware resources to multiple virtual machines." },
+                        { term: "Type 1 Hypervisor (Bare Metal)", def: "Runs directly on the hardware." },
+                        { term: "Type 2 Hypervisor (Hosted)", def: "Runs on top of a host operating system." },
+                        { term: "Guest OS", def: "An operating system installed within a virtual machine." },
+                        { term: "IaaS", def: "Infrastructure as a Service – provides raw hardware like servers/storage." },
+                        { term: "PaaS", def: "Platform as a Service – provides a platform for developers to build apps." },
+                        { term: "SaaS", def: "Software as a Service – provides ready-to-use software over the web." },
+                        { term: "Containers", def: "Lighter than virtual machines because they share the host system's OS kernel instead of running a full guest OS." }
+                    ],
+                    tips: [
+                        "Server Consolidation is a primary benefit of virtualization, allowing multiple virtual servers to run on one physical machine."
+                    ],
+                    essentials: [
+                        "Containers are lighter than VMs because they share the host OS kernel."
+                    ]
+                },
+                {
+                    id: "2.7",
+                    title: "Compare and Contrast Common Internet Service Types",
+                    terms: [
+                        { term: "Fiber Optic", def: "Uses light pulses to transmit data; offers the highest speeds and longest distances." },
+                        { term: "Cable Internet", def: "Uses the same coaxial infrastructure as cable TV." },
+                        { term: "DSL", def: "Digital Subscriber Line; uses standard copper telephone lines." },
+                        { term: "Satellite Internet", def: "Wireless internet often used in remote areas; characterized by high latency." },
+                        { term: "Latency", def: "The lag time or delay in data transmission, measured in milliseconds (ms)." }
+                    ],
+                    tips: [
+                        "Latency is the lag time measured in milliseconds (ms). Satellite has the highest latency."
+                    ],
+                    essentials: [
+                        "Wired services (Fiber, Cable, DSL) generally offer more stability than wireless options (Satellite, Cellular)."
+                    ]
+                },
+                {
+                    id: "2.8",
+                    title: "Identify Basic Networking Concepts",
+                    terms: [
+                        { term: "IP Address", def: "A logical address assigned by software to route data to the correct network." },
+                        { term: "MAC Address", def: "A unique physical address permanently hardcoded into a device's NIC." },
+                        { term: "Router", def: "Connects different networks and makes forwarding decisions based on IP addresses." },
+                        { term: "Switch", def: "Connects multiple devices within a LAN and directs data using MAC addresses." },
+                        { term: "Firewall", def: "A security device that filters network traffic based on predetermined rules." },
+                        { term: "DHCP", def: "Dynamic Host Configuration Protocol – automatically assigns IP addresses to devices on a network." },
+                        { term: "LAN", def: "Local Area Network – covers a small area like a home or office." },
+                        { term: "WAN", def: "Wide Area Network – spans a large geographical area." }
+                    ],
+                    tips: [
+                        "A LAN covers a small area like a home or office; a WAN spans a large geographical area."
+                    ],
+                    essentials: [
+                        "DHCP is used to automatically assign IP addresses to devices on a network."
+                    ]
+                },
+                {
+                    id: "2.9",
+                    title: "Basic Capabilities of a Small Wireless Network",
+                    terms: [
+                        { term: "802.11 Standards", def: "The standard for Wi-Fi (common versions include n, ac, and ax/Wi-Fi 6)." },
+                        { term: "SSID", def: "Service Set Identifier – the name assigned to a wireless network." },
+                        { term: "Attenuation", def: "The weakening of a wireless signal as it travels through distance or obstacles." }
+                    ],
+                    tips: [
+                        "2.4 GHz band offers longer range and better wall penetration but is more crowded.",
+                        "5 GHz band offers higher speeds but shorter range and less wall penetration."
+                    ],
+                    essentials: [
+                        "Wireless interference can be caused by physical obstacles or other devices operating on the same frequency, like microwave ovens."
+                    ]
+                }
+            ]
+        },
+        {
+            id: "3.0",
+            name: "Applications and Software",
+            color: "#06b6d4",
+            objectives: [
+                {
+                    id: "3.1",
+                    title: "Identify components of an OS",
+                    terms: [
+                        { term: "Filesystem", def: "The method an OS uses to organize and store files on a drive (e.g., NTFS, FAT32)." },
+                        { term: "GUI (Graphical User Interface)", def: "An interface using visual elements like icons and windows." },
+                        { term: "CLI (Command-line Interface)", def: "A text-based interface where users type specific commands." }
+                    ],
+                    tips: [
+                        "Distinguish between a service (runs in the background) and a process (an active program)."
+                    ],
+                    essentials: [
+                        "Operating systems manage hardware, provide a user interface, and coordinate application execution."
+                    ]
+                },
+                {
+                    id: "3.2",
+                    title: "Explain the Purpose of Operating Systems",
+                    terms: [
+                        { term: "Interface", def: "Provides a way for users and applications to communicate with hardware." },
+                        { term: "Disk Management", def: "Oversees how data is organized, stored, and retrieved from physical drives." },
+                        { term: "Task/Process Management", def: "Coordinates which programs run and how much CPU time they receive." },
+                        { term: "Access Control", def: "Manages security by ensuring only authorized users can access specific files or system settings." }
+                    ],
+                    tips: [
+                        "Expect questions on different OS types: Mobile (iOS/Android), Workstation (Windows/macOS), Server (Windows Server/Linux), and Embedded (specialized OS for smart TVs or cars)."
+                    ],
+                    essentials: [
+                        "Without an OS, computer hardware cannot coordinate its components or provide a usable environment for applications."
+                    ]
+                },
+                {
+                    id: "3.3",
+                    title: "Explain the Purpose and Proper Use of Software",
+                    terms: [
+                        { term: "Productivity Software", def: "Tools for creating content: Word Processing, Spreadsheets, and Presentation software." },
+                        { term: "Collaboration Software", def: "Apps that help teams work together: Email, Conferencing, Document Sharing." },
+                        { term: "Web Browsing Software", def: "Used to navigate the World Wide Web and interpret web code." },
+                        { term: "Remote Support Software", def: "Allows a technician to see or control another user's computer from a distance." }
+                    ],
+                    tips: [
+                        "Know the difference between an Email Client (installed app like Outlook) and Webmail (accessed through a browser like Gmail)."
+                    ],
+                    essentials: [
+                        "Software is designed to solve specific user problems; choosing the right category is key for efficiency."
+                    ]
+                },
+                {
+                    id: "3.4",
+                    title: "Configure and Use Web Browser Features",
+                    terms: [
+                        { term: "Private Browsing (Incognito)", def: "A mode that prevents the browser from saving history, cookies, or form data from that session." },
+                        { term: "Browser Add-ons/Extensions", def: "Small software modules that add extra features like ad-blockers or password managers." },
+                        { term: "Caching", def: "Storing temporary files from websites to make them load faster during future visits." },
+                        { term: "Pop-up Blockers", def: "Security features that prevent unwanted windows from opening automatically." },
+                        { term: "Profile Synchronization", def: "Allowing bookmarks, passwords, and history to follow a user across different devices." }
+                    ],
+                    tips: [
+                        "If a website isn't showing the most current information, the first step is often to clear the cache.",
+                        "Always download extensions only from trusted sources to avoid security risks."
+                    ],
+                    essentials: [
+                        "Browser maintenance includes regular updates, managing permissions for extensions, and clearing sensitive data regularly."
+                    ]
+                },
+                {
+                    id: "3.5",
+                    title: "Identify common uses of artificial intelligence (AI)",
+                    terms: [
+                        { term: "Generative AI", def: "AI capable of creating new content, such as text, images, or code." },
+                        { term: "AI Chatbots", def: "Programs designed to simulate conversation with human users." }
+                    ],
+                    tips: [
+                        "Understand that AI is now used for predictive analysis and suggestions in many software platforms."
+                    ],
+                    essentials: [
+                        "AI assists in automation and enhancing user productivity through intelligent assistants."
+                    ]
+                }
+            ]
+        },
+        {
+            id: "4.0",
+            name: "Software Development Concepts",
+            color: "#f59e0b",
+            objectives: [
+                {
+                    id: "4.1",
+                    title: "Compare and contrast programming language categories",
+                    terms: [
+                        { term: "Compiled Language", def: "Languages like C++ that are converted entirely into machine code before execution." },
+                        { term: "Interpreted Language", def: "Languages like Python that are read and executed line-by-line." },
+                        { term: "Markup Language", def: "Languages like HTML used to format the structure of a page." },
+                        { term: "Scripting Language", def: "A sub-category of interpreted languages used for automation and small tasks." }
+                    ],
+                    tips: [
+                        "Identify Scripting languages as a sub-category of interpreted languages."
+                    ],
+                    essentials: [
+                        "Compiled languages are generally faster, while interpreted languages are often easier to develop and test."
+                    ]
+                },
+                {
+                    id: "4.2",
+                    title: "Identify fundamental data types",
+                    terms: [
+                        { term: "Integer", def: "A whole number (e.g., 5, -10)." },
+                        { term: "Float", def: "A number with a decimal point (e.g., 3.14)." },
+                        { term: "Boolean", def: "A data type representing True or False." },
+                        { term: "String", def: "A sequence of characters (e.g., 'Hello World')." },
+                        { term: "Char", def: "A single character (e.g., 'A')." }
+                    ],
+                    tips: [
+                        "A String is a sequence of characters, while a Char is a single character."
+                    ],
+                    essentials: [
+                        "Choosing the correct data type is critical for memory efficiency and program accuracy."
+                    ]
+                },
+                {
+                    id: "4.3",
+                    title: "Programming Organizational Components",
+                    terms: [
+                        { term: "Functions", def: "Named blocks of code designed to perform a single, specific task." },
+                        { term: "Methods", def: "Similar to functions, but specifically associated with an Object." },
+                        { term: "Variables", def: "Containers for storing data values that can change during program execution." },
+                        { term: "Constants", def: "Values that are set once and cannot be changed (e.g., the value of Pi)." },
+                        { term: "Libraries", def: "Collections of pre-written code that developers can import to avoid reinventing the wheel." }
+                    ],
+                    tips: [
+                        "If code needs to be used 50 times in different places, the best solution is a Function.",
+                        "Think of Variables as a box with a label; you can swap the contents, but the label stays the same."
+                    ],
+                    essentials: [
+                        "Organization prevents 'spaghetti code' (disorganized code that is hard to maintain).",
+                        "Comments (text ignored by the computer) are essential for explaining why code was written a certain way."
+                    ]
+                },
+                {
+                    id: "4.4",
+                    title: "Explain the Use of Logic Components",
+                    terms: [
+                        { term: "Branching (If/Then/Else)", def: "Directs the program to follow different paths based on a condition." },
+                        { term: "For Loop", def: "Used when you know exactly how many times to repeat." },
+                        { term: "While Loop", def: "Used when you repeat until something changes." },
+                        { term: "Operators", def: "Symbols used to perform logic or math (e.g., ==, >, &&)." },
+                        { term: "Infinite Loop", def: "A logic error where the stop condition is never met, causing the program to freeze." },
+                        { term: "Pseudocode", def: "Used to plan logic in plain English before actually writing the code." }
+                    ],
+                    tips: [
+                        "A Loop is the most efficient way to process every item in a long list.",
+                        "Be careful with Infinite Loops—a logic error where the stop condition is never met."
+                    ],
+                    essentials: [
+                        "Logic allows programs to be interactive and reactive to user input.",
+                        "Pseudocode is often used to plan logic in plain English before coding."
+                    ]
+                }
+            ]
+        },
+        {
+            id: "5.0",
+            name: "Data and Database Fundamentals",
+            color: "#10b981",
+            objectives: [
+                {
+                    id: "5.1",
+                    title: "Explain the value of data and information",
+                    terms: [
+                        { term: "Data as an Asset", def: "Recognizing that data (e.g., customer lists, IP) has financial value and must be protected." },
+                        { term: "Big Data", def: "Large, complex datasets that require specialized tools for processing and analysis." },
+                        { term: "Data Monetization", def: "The process of using data to generate revenue, such as selling consumer insights." }
+                    ],
+                    tips: [
+                        "Distinguish between critical data (like payroll, essential for daily operations) and non-critical data."
+                    ],
+                    essentials: [
+                        "Data-driven decisions rely on accurate capture, correlation, and meaningful reporting of information."
+                    ]
+                },
+                {
+                    id: "5.2",
+                    title: "Explain database concepts",
+                    terms: [
+                        { term: "Relational Database", def: "Data organized into tables with predefined relationships." },
+                        { term: "Structured Data", def: "Data that fits neatly into tables with fixed fields." },
+                        { term: "Non-structured Data", def: "Data like images or emails that does not fit into tables." },
+                        { term: "Primary Key", def: "Uniquely identifies a record in a table." }
+                    ],
+                    tips: [
+                        "The Primary Key uniquely identifies a record in a table."
+                    ],
+                    essentials: [
+                        "Databases provide scalability and faster searching (querying) compared to flat files like spreadsheets."
+                    ]
+                },
+                {
+                    id: "5.3",
+                    title: "Compare and contrast various database structures",
+                    terms: [
+                        { term: "Structured Data", def: "Data that fits into fixed fields (e.g., a relational database table)." },
+                        { term: "Semi-structured Data", def: "Data with some organizational properties but no fixed schema (e.g., JSON or XML)." },
+                        { term: "Non-structured Data", def: "Data without a predefined model (e.g., photos, videos, emails)." },
+                        { term: "Foreign Key", def: "Links two tables together by referencing a primary key in another table." },
+                        { term: "Non-relational Database", def: "Includes key/value and document databases, often used for massive unstructured datasets." }
+                    ],
+                    tips: [
+                        "A Primary Key uniquely identifies each row; a Foreign Key links two tables together."
+                    ],
+                    essentials: [
+                        "Non-relational databases include key/value and document databases for massive unstructured datasets."
+                    ]
+                },
+                {
+                    id: "5.4",
+                    title: "Explain basic data backup concepts",
+                    terms: [
+                        { term: "Local Backup Storage", def: "Backing up to a physical device on-site, like an external hard drive." },
+                        { term: "Cloud Backup Storage", def: "Backing up to remote servers over the internet." },
+                        { term: "Data Persistence", def: "Ensures information remains available even after a system crash or power loss." }
+                    ],
+                    tips: [
+                        "Always verify a backup by attempting a restore to ensure the data is viable."
+                    ],
+                    essentials: [
+                        "Data persistence ensures information remains available even after a system crash or power loss."
+                    ]
+                }
+            ]
+        },
+        {
+            id: "6.0",
+            name: "Security",
+            color: "#ef4444",
+            objectives: [
+                {
+                    id: "6.1",
+                    title: "Fundamental security concepts",
+                    terms: [
+                        { term: "CIA Triad", def: "Confidentiality (secret), Integrity (accurate), and Availability (accessible)." },
+                        { term: "AAA", def: "Authentication (identity), Authorization (permissions), and Accounting (logs)." },
+                        { term: "Non-repudiation", def: "Proof that a person cannot deny an action they took (e.g., a digital signature)." },
+                        { term: "Principle of Least Privilege", def: "Giving users only the access they need to do their jobs." },
+                        { term: "Encryption", def: "The primary tool used to ensure Confidentiality." }
+                    ],
+                    tips: [
+                        "The Principle of Least Privilege means giving users only the access they need to do their jobs."
+                    ],
+                    essentials: [
+                        "Encryption is the primary tool used to ensure Confidentiality."
+                    ]
+                },
+                {
+                    id: "6.2",
+                    title: "Securing devices and best practices",
+                    terms: [
+                        { term: "Phishing", def: "Deceptive emails used to trick users into revealing sensitive data." },
+                        { term: "Multi-factor Authentication (MFA)", def: "Requiring two or more factors (Knowledge, Possession, Inherence) to log in." },
+                        { term: "Shoulder Surfing", def: "A physical threat where an attacker looks over your shoulder to see your screen or password." }
+                    ],
+                    tips: [
+                        "Shoulder Surfing is a physical threat where an attacker looks over your shoulder."
+                    ],
+                    essentials: [
+                        "Physical security, such as cable locks, is just as important as digital security."
+                    ]
+                },
+                {
+                    id: "6.3",
+                    title: "Explain password best practices",
+                    terms: [
+                        { term: "Password Complexity", def: "Using a mix of uppercase, lowercase, numbers, and symbols." },
+                        { term: "Password Manager", def: "Software that stores and generates strong, unique passwords for various sites." },
+                        { term: "Default Credentials", def: "Factory-set usernames and passwords (e.g., 'admin/admin') that must be changed immediately." },
+                        { term: "Password History", def: "Prevents users from cycling back to an old password too quickly." }
+                    ],
+                    tips: [
+                        "Password History prevents users from cycling back to an old password too quickly."
+                    ],
+                    essentials: [
+                        "Users should avoid reusing passwords across different sites and change them immediately if a breach is suspected."
+                    ]
+                },
+                {
+                    id: "6.4",
+                    title: "Identify common use cases for encryption",
+                    terms: [
+                        { term: "Plaintext", def: "Original, readable data." },
+                        { term: "Ciphertext", def: "Data that has been encrypted and is unreadable without a key." },
+                        { term: "Data at Rest", def: "Data stored on a physical device (e.g., file-level or disk-level encryption)." },
+                        { term: "Data in Transit", def: "Data moving across a network (e.g., via HTTPS, VPN, or encrypted email)." }
+                    ],
+                    tips: [
+                        "If you see HTTPS or VPN, the question is likely referring to securing data in transit."
+                    ],
+                    essentials: [
+                        "Encryption is the primary tool for ensuring Confidentiality."
+                    ]
+                },
+                {
+                    id: "6.5",
+                    title: "Configure security settings for a small wireless network",
+                    terms: [
+                        { term: "SSID (wireless security)", def: "The name of your Wi-Fi network; change from default to help prevent easy identification." },
+                        { term: "WPA3", def: "The most current and secure wireless encryption standard." },
+                        { term: "Pre-Shared Key (PSK)", def: "A password shared among users to access an encrypted wireless network." },
+                        { term: "Open Network", def: "Unencrypted; any data sent can be intercepted by others on the same network." }
+                    ],
+                    tips: [
+                        "'Open' networks are unencrypted; any data sent over them can be intercepted."
+                    ],
+                    essentials: [
+                        "Standard steps: change default SSID, change admin password, and select WPA2 or WPA3 encryption."
+                    ]
+                }
+            ]
+        }
+    ]
+};
+
+// ============================
+// STATE
+// ============================
+let state = {
+    mastered: JSON.parse(localStorage.getItem('techplus_mastered') || '{}'),
+    quizStats: JSON.parse(localStorage.getItem('techplus_quizStats') || '{"correct":0,"total":0,"quizzes":0}'),
+    streak: parseInt(localStorage.getItem('techplus_streak') || '0'),
+    lastStudy: localStorage.getItem('techplus_lastStudy') || ''
+};
+
+function saveState() {
+    localStorage.setItem('techplus_mastered', JSON.stringify(state.mastered));
+    localStorage.setItem('techplus_quizStats', JSON.stringify(state.quizStats));
+    localStorage.setItem('techplus_streak', state.streak);
+    localStorage.setItem('techplus_lastStudy', state.lastStudy);
+}
+
+function checkStreak() {
+    const today = new Date().toDateString();
+    if (state.lastStudy !== today) {
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+        if (state.lastStudy === yesterday) {
+            state.streak++;
+        } else if (state.lastStudy !== '') {
+            state.streak = 1;
+        } else {
+            state.streak = 1;
+        }
+        state.lastStudy = today;
+        saveState();
+    }
+    document.getElementById('streakCount').textContent = state.streak;
+}
+
+// ============================
+// HELPERS
+// ============================
+function getAllTerms(domainFilter) {
+    let terms = [];
+    studyData.domains.forEach(d => {
+        if (domainFilter && domainFilter !== 'all' && d.id !== domainFilter) return;
+        d.objectives.forEach(obj => {
+            obj.terms.forEach(t => {
+                terms.push({ ...t, domain: d.id, domainName: d.name, objective: obj.id, objTitle: obj.title });
+            });
+        });
+    });
+    return terms;
+}
+
+function shuffle(arr) {
+    let a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function showToast(msg, type = 'info') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============================
+// NAVIGATION
+// ============================
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + pageId).classList.add('active');
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l => {
+        if (l.textContent.toLowerCase().includes(pageId.substring(0, 4))) l.classList.add('active');
+    });
+
+    // Reset quiz display
+    if (pageId === 'quiz') {
+        document.getElementById('quizSetup').style.display = 'flex';
+        document.getElementById('quizArea').style.display = 'none';
+        document.getElementById('quizResults').style.display = 'none';
+    }
+
+    if (pageId === 'match') {
+        document.getElementById('matchSetup').style.display = 'flex';
+        document.getElementById('matchGrid').style.display = 'none';
+        document.getElementById('matchScore').style.display = 'none';
+        document.getElementById('matchRestart').style.display = 'none';
+    }
+
+    if (pageId === 'dashboard') updateDashboard();
+    if (pageId === 'study') initFlashcards();
+    if (pageId === 'reference') buildReference();
+
+    checkStreak();
+}
+
+// ============================
+// DASHBOARD
+// ============================
+function updateDashboard() {
+    const allTerms = getAllTerms();
+    const masteredCount = Object.keys(state.mastered).filter(k => state.mastered[k]).length;
+    const totalTerms = allTerms.length;
+    const accuracy = state.quizStats.total > 0 ? Math.round(state.quizStats.correct / state.quizStats.total * 100) : 0;
+
+    document.getElementById('totalTerms').textContent = totalTerms;
+    document.getElementById('masteredCount').textContent = masteredCount;
+    document.getElementById('quizAccuracy').textContent = accuracy + '%';
+    document.getElementById('quizzesTaken').textContent = state.quizStats.quizzes;
+    document.getElementById('progressPercent').textContent = Math.round(masteredCount / totalTerms * 100) + '%';
+    document.getElementById('progressFill').style.width = Math.round(masteredCount / totalTerms * 100) + '%';
+
+    // Build domain cards
+    const grid = document.getElementById('domainsGrid');
+    grid.innerHTML = '';
+    studyData.domains.forEach(d => {
+        const dTerms = getAllTerms(d.id);
+        const dMastered = dTerms.filter(t => state.mastered[t.term]).length;
+        const pct = dTerms.length > 0 ? Math.round(dMastered / dTerms.length * 100) : 0;
+
+        const card = document.createElement('div');
+        card.className = 'domain-card';
+        card.style.setProperty('--card-accent', d.color);
+        card.onclick = () => { document.getElementById('fcDomainSelect').value = d.id; showPage('study'); };
+        card.innerHTML = `
+            <div class="domain-num">Domain ${d.id}</div>
+            <h3>${d.name}</h3>
+            <p>${d.objectives.length} objectives · ${dTerms.length} terms</p>
+            <div class="domain-meta">
+                <span class="domain-objectives">${pct}% mastered</span>
+                <div class="domain-progress">
+                    <div class="domain-progress-fill" style="width:${pct}%;background:${d.color}"></div>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// ============================
+// DOMAIN SELECT POPULATION
+// ============================
+function populateDomainSelects() {
+    const selects = ['fcDomainSelect', 'quizDomainSelect', 'matchDomainSelect'];
+    selects.forEach(id => {
+        const sel = document.getElementById(id);
+        sel.innerHTML = '<option value="all">All Domains</option>';
+        studyData.domains.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d.id;
+            opt.textContent = `Domain ${d.id}: ${d.name}`;
+            sel.appendChild(opt);
+        });
+    });
+}
+
+// ============================
+// FLASHCARDS
+// ============================
+let fc = { cards: [], index: 0, known: 0, unknown: 0 };
+
+function initFlashcards() {
+    const domain = document.getElementById('fcDomainSelect').value;
+    fc.cards = shuffle(getAllTerms(domain));
+    fc.index = 0;
+    fc.known = 0;
+    fc.unknown = 0;
+    showFlashcard();
+}
+
+function showFlashcard() {
+    if (fc.cards.length === 0) return;
+    const card = fc.cards[fc.index];
+    document.getElementById('fcFront').textContent = card.term;
+    document.getElementById('fcBack').textContent = card.def;
+    document.getElementById('flashcard').classList.remove('flipped');
+    document.getElementById('fcProgress').textContent = `Card ${fc.index + 1} of ${fc.cards.length}`;
+    document.getElementById('fcScore').textContent = `✅ ${fc.known} | ❌ ${fc.unknown}`;
+}
+
+function flipCard() {
+    document.getElementById('flashcard').classList.toggle('flipped');
+}
+
+function markCard(known) {
+    if (fc.cards.length === 0) return;
+    const card = fc.cards[fc.index];
+    if (known) {
+        fc.known++;
+        state.mastered[card.term] = true;
+        showToast('✅ Marked as mastered!', 'success');
+    } else {
+        fc.unknown++;
+        state.mastered[card.term] = false;
+        showToast('📖 Keep studying this one!', 'info');
+    }
+    saveState();
+    nextCard();
+}
+
+function nextCard() {
+    if (fc.cards.length === 0) return;
+    fc.index = (fc.index + 1) % fc.cards.length;
+    showFlashcard();
+}
+
+function prevCard() {
+    if (fc.cards.length === 0) return;
+    fc.index = (fc.index - 1 + fc.cards.length) % fc.cards.length;
+    showFlashcard();
+}
+
+// ============================
+// QUIZ
+// ============================
+let quiz = { questions: [], current: 0, score: 0, answered: false, timer: null, seconds: 0 };
+
+function generateQuizQuestions(domain, count) {
+    const allTerms = shuffle(getAllTerms(domain));
+    const questions = [];
+
+    allTerms.slice(0, count).forEach(term => {
+        // Get wrong answers from other terms
+        const wrongPool = allTerms.filter(t => t.term !== term.term);
+        const wrongs = shuffle(wrongPool).slice(0, 3).map(t => t.def);
+        const options = shuffle([...wrongs, term.def]);
+        const correctIndex = options.indexOf(term.def);
+
+        questions.push({
+            question: `What is the definition of "${term.term}"?`,
+            options,
+            correct: correctIndex,
+            explanation: `${term.term}: ${term.def}`,
+            domain: `Domain ${term.domain} — Obj ${term.objective}`,
+            term: term.term
+        });
+    });
+
+    return questions;
+}
+
+function startQuiz(count) {
+    const domain = document.getElementById('quizDomainSelect').value;
+    const allTerms = getAllTerms(domain);
+    count = Math.min(count, allTerms.length);
+
+    if (count < 4) {
+        showToast('Need at least 4 terms for a quiz!', 'info');
+        return;
+    }
+
+    quiz.questions = generateQuizQuestions(domain, count);
+    quiz.current = 0;
+    quiz.score = 0;
+    quiz.seconds = 0;
+
+    document.getElementById('quizSetup').style.display = 'none';
+    document.getElementById('quizResults').style.display = 'none';
+    document.getElementById('quizArea').style.display = 'block';
+
+    clearInterval(quiz.timer);
+    quiz.timer = setInterval(() => {
+        quiz.seconds++;
+        const m = Math.floor(quiz.seconds / 60);
+        const s = quiz.seconds % 60;
+        document.getElementById('quizTimer').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+    }, 1000);
+
+    showQuestion();
+}
+
+function showQuestion() {
+    const q = quiz.questions[quiz.current];
+    quiz.answered = false;
+
+    document.getElementById('quizProgress').textContent = `Question ${quiz.current + 1} / ${quiz.questions.length}`;
+    document.getElementById('quizDomain').textContent = q.domain;
+    document.getElementById('quizQuestion').textContent = q.question;
+    document.getElementById('quizExplanation').classList.remove('show');
+
+    const optionsDiv = document.getElementById('quizOptions');
+    optionsDiv.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D'];
+    q.options.forEach((opt, i) => {
+        const div = document.createElement('div');
+        div.className = 'quiz-option';
+        div.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+        div.onclick = () => selectOption(i);
+        optionsDiv.appendChild(div);
+    });
+
+    const btn = document.getElementById('quizBtn');
+    btn.textContent = 'Check Answer';
+    btn.disabled = true;
+    btn.onclick = () => quizAction();
+}
+
+let selectedOption = -1;
+
+function selectOption(i) {
+    if (quiz.answered) return;
+    selectedOption = i;
+    document.querySelectorAll('.quiz-option').forEach((o, idx) => {
+        o.classList.toggle('selected', idx === i);
+    });
+    document.getElementById('quizBtn').disabled = false;
+}
+
+function quizAction() {
+    const btn = document.getElementById('quizBtn');
+    const q = quiz.questions[quiz.current];
+
+    if (!quiz.answered) {
+        // Check answer
+        quiz.answered = true;
+        const options = document.querySelectorAll('.quiz-option');
+        options.forEach((o, i) => {
+            o.classList.add('disabled');
+            if (i === q.correct) o.classList.add('correct');
+            if (i === selectedOption && i !== q.correct) o.classList.add('incorrect');
+        });
+
+        if (selectedOption === q.correct) {
+            quiz.score++;
+            state.mastered[q.term] = true;
+        }
+        state.quizStats.total++;
+        if (selectedOption === q.correct) state.quizStats.correct++;
+        saveState();
+
+        document.getElementById('quizExplanation').innerHTML = `💡 <strong>Explanation:</strong> ${q.explanation}`;
+        document.getElementById('quizExplanation').classList.add('show');
+
+        if (quiz.current < quiz.questions.length - 1) {
+            btn.textContent = 'Next Question →';
+        } else {
+            btn.textContent = 'See Results';
+        }
+    } else {
+        // Next question or results
+        if (quiz.current < quiz.questions.length - 1) {
+            quiz.current++;
+            selectedOption = -1;
+            showQuestion();
+        } else {
+            showQuizResults();
+        }
+    }
+}
+
+function showQuizResults() {
+    clearInterval(quiz.timer);
+    state.quizStats.quizzes++;
+    saveState();
+
+    document.getElementById('quizArea').style.display = 'none';
+    document.getElementById('quizResults').style.display = 'block';
+
+    const pct = Math.round(quiz.score / quiz.questions.length * 100);
+    const scoreEl = document.getElementById('resultsScore');
+    scoreEl.textContent = pct + '%';
+    scoreEl.className = pct >= 70 ? 'results-score' : 'results-score low';
+
+    let subtitle = '';
+    if (pct >= 90) subtitle = '🏆 Outstanding! You\'re exam ready!';
+    else if (pct >= 70) subtitle = '👍 Great job! Keep practicing!';
+    else if (pct >= 50) subtitle = '📖 Getting there! Review weak areas.';
+    else subtitle = '💪 Keep studying, you\'ll get there!';
+
+    document.getElementById('resultsSubtitle').textContent = subtitle;
+    document.getElementById('resCorrect').textContent = quiz.score;
+    document.getElementById('resIncorrect').textContent = quiz.questions.length - quiz.score;
+    const m = Math.floor(quiz.seconds / 60);
+    const s = quiz.seconds % 60;
+    document.getElementById('resTime').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+// ============================
+// MATCH GAME
+// ============================
+let match = { pairs: [], selectedTerm: null, selectedDef: null, matched: 0, total: 0 };
+
+function startMatch() {
+    const domain = document.getElementById('matchDomainSelect').value;
+    const allTerms = shuffle(getAllTerms(domain));
+    const count = Math.min(6, allTerms.length);
+    const selected = allTerms.slice(0, count);
+
+    match.pairs = selected.map(t => ({ term: t.term, def: t.def }));
+    match.selectedTerm = null;
+    match.selectedDef = null;
+    match.matched = 0;
+    match.total = count;
+
+    document.getElementById('matchSetup').style.display = 'none';
+    document.getElementById('matchGrid').style.display = 'grid';
+    document.getElementById('matchScore').style.display = 'block';
+    document.getElementById('matchRestart').style.display = 'none';
+    document.getElementById('matchedCount').textContent = '0';
+    document.getElementById('matchTotal').textContent = count;
+
+    renderMatch();
+}
+
+function renderMatch() {
+    const grid = document.getElementById('matchGrid');
+    grid.innerHTML = '<div class="match-col-header">Terms</div><div class="match-col-header">Definitions</div>';
+
+    const shuffledTerms = shuffle([...match.pairs]);
+    const shuffledDefs = shuffle([...match.pairs]);
+
+    shuffledTerms.forEach((p, i) => {
+        const div = document.createElement('div');
+        div.className = 'match-item';
+        div.dataset.term = p.term;
+        div.dataset.type = 'term';
+        div.textContent = p.term;
+        div.onclick = () => selectMatchItem(div);
+        grid.appendChild(div);
+
+        const defDiv = document.createElement('div');
+        defDiv.className = 'match-item';
+        defDiv.dataset.def = shuffledDefs[i].def;
+        defDiv.dataset.matchTerm = shuffledDefs[i].term;
+        defDiv.dataset.type = 'def';
+        defDiv.textContent = shuffledDefs[i].def;
+        defDiv.onclick = () => selectMatchItem(defDiv);
+        grid.appendChild(defDiv);
+    });
+}
+
+function selectMatchItem(el) {
+    if (el.classList.contains('matched')) return;
+
+    const type = el.dataset.type;
+
+    if (type === 'term') {
+        document.querySelectorAll('.match-item[data-type="term"]').forEach(e => e.classList.remove('selected'));
+        el.classList.add('selected');
+        match.selectedTerm = el;
+    } else {
+        document.querySelectorAll('.match-item[data-type="def"]').forEach(e => e.classList.remove('selected'));
+        el.classList.add('selected');
+        match.selectedDef = el;
+    }
+
+    if (match.selectedTerm && match.selectedDef) {
+        checkMatch();
+    }
+}
+
+function checkMatch() {
+    const termText = match.selectedTerm.dataset.term;
+    const defMatchTerm = match.selectedDef.dataset.matchTerm;
+
+    if (termText === defMatchTerm) {
+        match.selectedTerm.classList.add('matched');
+        match.selectedTerm.classList.remove('selected');
+        match.selectedDef.classList.add('matched');
+        match.selectedDef.classList.remove('selected');
+        match.matched++;
+        document.getElementById('matchedCount').textContent = match.matched;
+
+        state.mastered[termText] = true;
+        saveState();
+
+        if (match.matched === match.total) {
+            showToast('🎉 All matched! Great job!', 'success');
+            document.getElementById('matchRestart').style.display = 'flex';
+        }
+    } else {
+        match.selectedTerm.classList.add('wrong');
+        match.selectedDef.classList.add('wrong');
+        setTimeout(() => {
+            match.selectedTerm.classList.remove('wrong', 'selected');
+            match.selectedDef.classList.remove('wrong', 'selected');
+            match.selectedTerm = null;
+            match.selectedDef = null;
+        }, 600);
+        return;
+    }
+
+    match.selectedTerm = null;
+    match.selectedDef = null;
+}
+
+// ============================
+// REFERENCE
+// ============================
+function buildReference() {
+    const container = document.getElementById('refContent');
+    container.innerHTML = '';
+
+    studyData.domains.forEach(d => {
+        d.objectives.forEach(obj => {
+            const section = document.createElement('div');
+            section.className = 'ref-section';
+            section.dataset.search = `${d.name} ${obj.title} ${obj.terms.map(t => t.term + ' ' + t.def).join(' ')}`.toLowerCase();
+
+            let termsHTML = obj.terms.map(t => `
+                <div class="ref-term">
+                    <strong>${t.term}</strong>
+                    <p>${t.def}</p>
+                </div>
+            `).join('');
+
+            let tipsHTML = obj.tips.map(t => `<div class="ref-tip">💡 <strong>Exam Tip:</strong> ${t}</div>`).join('');
+            let essentialsHTML = obj.essentials.map(e => `<div class="ref-essential">✅ <strong>Essential:</strong> ${e}</div>`).join('');
+
+            section.innerHTML = `
+                <div class="ref-header" onclick="this.parentElement.classList.toggle('open')">
+                    <h3><span style="color:${d.color}">Obj ${obj.id}</span> — ${obj.title}</h3>
+                    <span class="ref-arrow">▼</span>
+                </div>
+                <div class="ref-body">
+                    <div class="ref-content">
+                        ${termsHTML}
+                        ${tipsHTML}
+                        ${essentialsHTML}
+                    </div>
+                </div>
+            `;
+            container.appendChild(section);
+        });
+    });
+}
+
+function filterReference() {
+    const query = document.getElementById('refSearch').value.toLowerCase();
+    document.querySelectorAll('.ref-section').forEach(s => {
+        const match = s.dataset.search.includes(query);
+        s.style.display = match ? 'block' : 'none';
+        if (match && query.length > 0) s.classList.add('open');
+        else if (query.length === 0) s.classList.remove('open');
+    });
+}
+
+// ============================
+// INIT
+// ============================
+function init() {
+    populateDomainSelects();
+    checkStreak();
+    updateDashboard();
+    buildReference();
+}
+
+init();
+</script>
+</body>
+</html>
